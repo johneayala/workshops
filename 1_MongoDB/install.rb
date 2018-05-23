@@ -51,3 +51,9 @@ yum_repository 'mongodb' do
   action :create
 end
 
+package 'mongodb-org'
+
+service 'mongod' do
+  action [:enable, :start]
+end
+
