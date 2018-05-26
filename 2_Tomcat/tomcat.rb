@@ -1,9 +1,11 @@
 #
 # Install OpenJDK 7
-package 'java-1.7.0-openjdk-devel'
+package 'java-1.7.0-openjdk-devel' do
+end
 
 # Create group & user for tomcat
-group 'tomcat'
+group 'tomcat' do
+end
 
 user 'tomcat_user' do
   manage_home false
@@ -20,36 +22,83 @@ remote_file '/tmp/apache-tomcat-8-latest.tar.gz' do
 end
 
 # Extract tomcat binaries in /opt/tomcat
-directory '/opt/tomcat'
+directory '/opt/tomcat' do
+end
 
+# Extract tomcat binaries into /opt/tomcat
 execute 'extract_tomcat' do
   command '/bin/tar zxf /tmp/apache-tomcat-8-latest.tar.gz --strip-components=1'
   cwd '/opt/tomcat'
   not_if { File.exists?("/opt/tomcat/lib/catalina.jar") }
 end
 
+# Set permissions & ownership for tomcat user/group in tomcat binaries dirs/files
 execute 'tomcat_dir_group' do
   command '/bin/chgrp -R tomcat /opt/tomcat'
-  only_if { File.exists?("/opt/tomcat") }
+  only_if { Dir.exists?("/opt/tomcat") }
 end
 
 execute 'tomcat_conf_read' do
   command '/bin/chmod -R g+r /opt/tomcat/conf'
-  only_if { File.exists?("/opt/tomcat/conf/catalina.properties") }
+  only_if { Dir.exists?("/opt/tomcat/conf") }
+  notifies :run, 'execute[tomcat_conf_dir]', :immediately 
 end
 
 execute 'tomcat_conf_dir' do
   command '/bin/chmod g+x /opt/tomcat/conf'
-  only_if { File.exists?("/opt/tomcat/conf") }
+  action :nothing
 end
 
 %w{webapps work temp logs}.each do |subdir|
   sdname = "/opt/tomcat/#{subdir}"
   execute subdir do
     command "/bin/chown -R tomcat #{sdname}"
-#    only_if { File.exists?("/opt/tomcat/conf") }
+    only_if { Dir.exists?("#{sdname}") }
   end
 end
 
+# Install Systemd unit file & trigger reload of systemd-daemon
+systemd_unit 'tomcat.service' do
+  content <<-EOU.gsub(/^\s+\|/, '')
+  |[Unit]
+  |Description=Apache Tomcat Web Application Container
+  |After=syslog.target network.target
+  |
+  |[Service]
+  |Type=forking
+  |
+  |Environment=JAVA_HOME=/usr/lib/jvm/jre
+  |Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+  |Environment=CATALINA_HOME=/opt/tomcat
+  |Environment=CATALINA_BASE=/opt/tomcat
+  |Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+  |Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+  |
+  |ExecStart=/opt/tomcat/bin/startup.sh
+  |ExecStop=/bin/kill -15 $MAINPID
+  | 
+  |User=tomcat
+  |Group=tomcat
+  |UMask=0007
+  |RestartSec=10
+  |Restart=always
+  |
+  |[Install]
+  |WantedBy=multi-user.target
+  |
+  EOU
 
+  action :create
+  triggers_reload true
+end
+
+# Start and enable tomcat service
+service 'tomcat' do
+  action [ :enable, :start ]
+end
+
+# Run curl to verify tomcat is running
+execute 'check_tomcat' do
+  command '/bin/curl http://localhost:8080'
+end
 
