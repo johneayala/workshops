@@ -19,7 +19,7 @@ remote_file '/tmp/apache-tomcat-8-latest.tar.gz' do
   source 'https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.31/bin/apache-tomcat-8.5.31.tar.gz'
 end
 
-# Extract tomcat binaries in /top/tomcat
+# Extract tomcat binaries in /opt/tomcat
 directory '/opt/tomcat'
 
 execute 'extract_tomcat' do
@@ -28,28 +28,28 @@ execute 'extract_tomcat' do
   not_if { File.exists?("/opt/tomcat/lib/catalina.jar") }
 end
 
-#directory 'tomcat_dir_group' do
-#  group 'tomcat'
-#  recursive true
-#  path '/opt/tomcat'
-#end
+execute 'tomcat_dir_group' do
+  command '/bin/chgrp -R tomcat /opt/tomcat'
+  only_if { File.exists?("/opt/tomcat") }
+end
 
-#directory 'tomcat_conf_mode' do
-#  mode '0640'
-#  recursive true
-#  path '/opt/tomcat/conf'
-#end
+execute 'tomcat_conf_read' do
+  command '/bin/chmod -R g+r /opt/tomcat/conf'
+  only_if { File.exists?("/opt/tomcat/conf/catalina.properties") }
+end
 
-#directory 'tomcat_conf_dir' do
-#  mode '0750'
-#  path '/opt/tomcat/conf'
-#end
+execute 'tomcat_conf_dir' do
+  command '/bin/chmod g+x /opt/tomcat/conf'
+  only_if { File.exists?("/opt/tomcat/conf") }
+end
 
-#%w[ /opt/tomcat/webapps /opt/tomcat/work /opt/tomcat/temp /opt/tomcat/logs ].each do |tompath|
-#  directory 'tompath' do
-#    owner 'tomcat'
-#    recursive true
-#  end
-#end
+%w{webapps work temp logs}.each do |subdir|
+  sdname = "/opt/tomcat/#{subdir}"
+  execute subdir do
+    command "/bin/chown -R tomcat #{sdname}"
+#    only_if { File.exists?("/opt/tomcat/conf") }
+  end
+end
+
 
 
