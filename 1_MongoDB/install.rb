@@ -43,17 +43,23 @@
 #
 # sudo chkconfig mongod on#
 
-yum_repository 'mongodb' do
-  description "MongoDB Repository"
-  baseurl "http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/"
-  gpgcheck false
-  enabled true
-  action :create
-end
+case node['platform_family']
+when 'redhat'
+  yum_repository 'mongodb' do
+    description "MongoDB Repository"
+    baseurl "http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/"
+    gpgcheck false
+    enabled true
+    action :create
+  end
 
-package 'mongodb-org'
+  package 'mongodb-org' do
+    #notifies [:enable, :start], 'service[mongod]', :immediately
+  end
+end
 
 service 'mongod' do
   action [:enable, :start]
+  #action :nothing
 end
 
