@@ -147,7 +147,7 @@ end
 
 # Adding sleep for tomcat service startup time
 execute 'startup_sleep' do
-  command '/bin/sleep 5'
+  command '/bin/sleep 3'
 end
 
 # Run curl to verify tomcat is running
