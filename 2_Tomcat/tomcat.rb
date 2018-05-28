@@ -110,6 +110,6 @@ end
 
 # Run curl to verify tomcat is running
 execute 'check_tomcat' do
-  command '/bin/curl http://localhost:8080'
+  command '/usr/bin/curl http://localhost:8080'
 end
 
