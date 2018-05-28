@@ -61,11 +61,17 @@ when 'debian'
     command '/usr/bin/apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5'
   end
   
-  file 'mongodb_repo' do
+  file '/etc/apt/sources.list.d/mongodb_repo.list' do
     content 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse'
     mode '0644'
     owner 'root'
     group 'root'
+    notifies :run, 'execute[apt_update]', :immediately
+  end
+
+  execute 'apt_update' do
+    command 'apt update'
+    action :nothing
   end
 
   apt_package 'mongodb-org' do
@@ -73,12 +79,6 @@ when 'debian'
 end
 
 service 'mongodb_service' do
-#  case node['platform_family']
-#  when 'redhat'
-#    service_name 'mongod'
-#  when 'debian'
-#    service_name 'mongod'
-#  end
   service_name 'mongod'
   action [:enable, :start]
 end
