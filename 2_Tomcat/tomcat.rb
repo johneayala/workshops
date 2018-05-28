@@ -143,7 +143,7 @@ end
 # Start and enable tomcat service
 service 'tomcat' do
   action [ :enable, :start ]
-  notifies :run 'execute[startup_sleep]', :immediately
+  notifies :run, 'execute[startup_sleep]', :immediately
 end
 
 # Adding sleep for tomcat service startup time
