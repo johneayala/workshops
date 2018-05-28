@@ -43,3 +43,13 @@ There are a couple of ways that you can write, test and run your cookbook.
 
 * Use the [Chef Documentation](http://docs.chef.io) to identify and use resources that will help you model the desired state of your infrastructure.
 * [Tomcat Installation Instructions](https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-8-on-centos-7)
+
+# Assumptions & Instructions - added by John Ayala
+Assumptions and instructions for Chef workshops/2_Tomcat/tomcat.rb added by John Ayala
+
+* Node(s) 
+  * Must have internet access
+  * Do not have firewalls enabled
+
+* Run recipe as root user or with root authority
+

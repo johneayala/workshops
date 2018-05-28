@@ -43,3 +43,13 @@ There are a couple of ways that you can write, test and run your cookbook.
 
 * Use the [Chef Documentation](http://docs.chef.io) to identify and use resources that will help you model the desired state of your infrastructure.
 * [MongoDB Installation Instructions](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-red-hat/)
+
+# Assumptions & Instructions - added by John Ayala
+Assumptions and instructions for Chef workshops/1_MongoDB/install.rb added by John Ayala
+
+* Node(s) 
+  * Must have internet access
+  * Do not have firewalls enabled
+
+* Run recipe as root user or with root authority
+
