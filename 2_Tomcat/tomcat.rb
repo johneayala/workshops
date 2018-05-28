@@ -1,6 +1,17 @@
 #
 # Install OpenJDK 7
-package 'java-1.7.0-openjdk-devel' do
+case node['platform_family']
+when 'rhel'
+  package 'java-1.7.0-openjdk-devel' do
+  end
+
+when 'debian'
+  apt_repository 'openjdk_all' do
+    uri 'ppa:openjdk-r/ppa'
+    components ['main']
+end
+  apt_package 'openjdk-7-jdk' do
+  end
 end
 
 # Create group & user for tomcat
