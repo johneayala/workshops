@@ -9,7 +9,7 @@ when 'debian'
   apt_repository 'openjdk_all' do
     uri 'ppa:openjdk-r/ppa'
     components ['main']
-end
+  end
   apt_package %w(openjdk-7-jdk curl) do
   end
 end
@@ -140,13 +140,12 @@ when 'debian'
 end
 
 
-# Start and enable tomcat service
+# Start and enable tomcat service. If started, sleep before continuing
 service 'tomcat' do
   action [ :enable, :start ]
   notifies :run, 'execute[startup_sleep]', :immediately
 end
 
-# Adding sleep for tomcat service startup time
 execute 'startup_sleep' do
   command '/bin/sleep 3'
   action :nothing
