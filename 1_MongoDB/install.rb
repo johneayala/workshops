@@ -44,7 +44,7 @@
 # sudo chkconfig mongod on#
 
 case node['platform_family']
-when 'redhat'
+when 'rhel'
   yum_repository 'mongodb' do
     description "MongoDB Repository"
     baseurl "http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/"
