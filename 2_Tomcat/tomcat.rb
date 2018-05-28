@@ -145,6 +145,11 @@ service 'tomcat' do
   action [ :enable, :start ]
 end
 
+# Adding sleep for tomcat service startup time
+execute 'startup_sleep' do
+  command '/bin/sleep 5'
+end
+
 # Run curl to verify tomcat is running
 execute 'check_tomcat' do
   command '/usr/bin/curl http://localhost:8080'
