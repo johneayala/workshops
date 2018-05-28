@@ -54,12 +54,32 @@ when 'redhat'
   end
 
   package 'mongodb-org' do
-    #notifies [:enable, :start], 'service[mongod]', :immediately
+  end
+
+when 'debian'
+  execute 'repo_key' do
+    command '/usr/bin/apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5'
+  end
+  
+  file 'mongodb_repo' do
+    content 'deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse'
+    mode '0644'
+    owner 'root'
+    group 'root'
+  end
+
+  apt_package 'mongodb-org' do
   end
 end
 
-service 'mongod' do
+service 'mongodb_service' do
+#  case node['platform_family']
+#  when 'redhat'
+#    service_name 'mongod'
+#  when 'debian'
+#    service_name 'mongod'
+#  end
+  service_name 'mongod'
   action [:enable, :start]
-  #action :nothing
 end
 
