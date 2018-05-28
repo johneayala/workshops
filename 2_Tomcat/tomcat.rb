@@ -2,7 +2,7 @@
 # Install OpenJDK 7
 case node['platform_family']
 when 'rhel'
-  package 'java-1.7.0-openjdk-devel' do
+  package %w(java-1.7.0-openjdk-devel curl) do
   end
 
 when 'debian'
@@ -10,7 +10,7 @@ when 'debian'
     uri 'ppa:openjdk-r/ppa'
     components ['main']
 end
-  apt_package 'openjdk-7-jdk' do
+  apt_package %w(openjdk-7-jdk curl) do
   end
 end
 
