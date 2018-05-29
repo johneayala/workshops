@@ -43,8 +43,8 @@
 #
 # sudo chkconfig mongod on#
 
-case node['platform_family']
-when 'rhel'
+case node['platform']
+when 'redhat', 'centos'
   yum_repository 'mongodb' do
     description "MongoDB Repository"
     baseurl "http://downloads-distro.mongodb.org/repo/redhat/os/x86_64/"
@@ -56,7 +56,7 @@ when 'rhel'
   package 'mongodb-org' do
   end
 
-when 'debian'
+when 'ubuntu'
   execute 'repo_key' do
     command '/usr/bin/apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5'
   end

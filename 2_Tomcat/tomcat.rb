@@ -1,11 +1,11 @@
 #
 # Install OpenJDK 7
-case node['platform_family']
-when 'rhel'
+case node['platform']
+when 'redhat', 'centos'
   package %w(java-1.7.0-openjdk-devel curl) do
   end
 
-when 'debian'
+when 'ubuntu'
   apt_repository 'openjdk_all' do
     uri 'ppa:openjdk-r/ppa'
     components ['main']
@@ -70,7 +70,7 @@ end
 
 # Install Systemd unit file & trigger reload of systemd-daemon
 case node['platform_family']
-when 'rhel'
+when 'redhat', 'centos'
   systemd_unit 'tomcat.service' do
     content <<-EOU.gsub(/^\s+\|/, '')
     |[Unit]
@@ -104,7 +104,7 @@ when 'rhel'
     triggers_reload true
   end
 
-when 'debian'
+when 'ubuntu'
   systemd_unit 'tomcat.service' do
     content <<-EOU.gsub(/^\s+\|/, '')
     |[Unit]
