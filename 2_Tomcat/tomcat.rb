@@ -69,7 +69,7 @@ end
 end
 
 # Install Systemd unit file & trigger reload of systemd-daemon
-case node['platform_family']
+case node['platform']
 when 'redhat', 'centos'
   systemd_unit 'tomcat.service' do
     content <<-EOU.gsub(/^\s+\|/, '')
