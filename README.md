@@ -1,5 +1,18 @@
 # Chef SA Workshops
 
+## Completed Workshops by John Ayala
+* `1_MongoDB`
+* `2_Tomcat`
+* `3_Bonus`
+  * Refactored `1_MongoDB` and `2_Tomcat` for Ubuntu
+
+Notes:
+* Tested on:
+  * RHEL 7.5
+  * CENTOS 7.5
+  * Ubuntu 16.04
+
+
 ## Instructions
 
 Complete the mandatory workshops below. These may be completed in any order, but it the recommendation is `1_MongoDB` then `2_Tomcat`.
